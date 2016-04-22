@@ -20,14 +20,6 @@
 .Select {
 	position: relative;
 
-	// preferred box model
-	&,
-	& div,
-	& input,
-	& span {
-		.box-sizing(border-box);
-	}
-
 	// handle disabled state
 	&.is-disabled > .Select-control {
 		background-color: @select-input-bg-disabled;
