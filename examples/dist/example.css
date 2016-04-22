@@ -28,9 +28,6 @@
 }
 .Select-control {
   background-color: #fff;
-  border-color: #d9d9d9 #ccc #b3b3b3;
-  border-radius: 4px;
-  border: 1px solid #ccc;
   color: #333;
   cursor: default;
   display: table;
@@ -39,6 +36,8 @@
   overflow: hidden;
   position: relative;
   width: 100%;
+  border: 0;
+  border-buttom: '1px solid #ddd';
 }
 .Select-control:hover {
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
@@ -242,6 +241,10 @@
 }
 .Select-option.is-focused {
   background-color: rgba(0, 126, 255, 0.08);
+  color: #333;
+}
+.Select-option.is-selected {
+  background-color: #DAD1D1;
   color: #333;
 }
 .Select-option.is-disabled {
@@ -509,4 +512,7 @@ h6,
   font-size: .85em;
   margin: 15px 0;
   color: #666;
+}
+.virtual-scroll {
+  z-index: 1;
 }
