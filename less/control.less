@@ -47,7 +47,6 @@
 	background-color: @select-input-bg;
 	border-color: lighten(@select-input-border-color, 5%) @select-input-border-color darken(@select-input-border-color, 10%);
 	border-radius: @select-input-border-radius;
-	border: @select-input-border-width solid @select-input-border-color;
 	color: @select-text-color;
 	cursor: default;
 	display: table;
@@ -56,7 +55,8 @@
 	overflow: hidden;
 	position: relative;
 	width: 100%;
-
+  	border:0;
+	border-buttom:'1ps solid #ddd';
 	&:hover {
 		box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
 	}
