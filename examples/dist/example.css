@@ -8,14 +8,6 @@
 .Select {
   position: relative;
 }
-.Select,
-.Select div,
-.Select input,
-.Select span {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
 .Select.is-disabled > .Select-control {
   background-color: #f9f9f9;
 }
@@ -37,7 +29,7 @@
   position: relative;
   width: 100%;
   border: 0;
-  border-buttom: '1px solid #ddd';
+  border-bottom: 1px solid #ddd;
 }
 .Select-control:hover {
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
