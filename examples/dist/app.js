@@ -2111,7 +2111,9 @@ var AutoSizer = function (_Component) {
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
-      this._detectElementResize.removeResizeListener(this._parentNode, this._onResize);
+      if (this._detectElementResize) {
+        this._detectElementResize.removeResizeListener(this._parentNode, this._onResize);
+      }
     }
   }, {
     key: 'render',
@@ -5406,8 +5408,8 @@ function findNearestCell(_ref2) {
 
   var high = cellMetadata.length - 1;
   var low = 0;
-  var middle = undefined;
-  var currentOffset = undefined;
+  var middle = void 0;
+  var currentOffset = void 0;
 
   // TODO Add better guards here against NaN offset
 
@@ -5582,6 +5584,7 @@ var InfiniteLoader = function (_Component) {
       var _props = this.props;
       var isRowLoaded = _props.isRowLoaded;
       var loadMoreRows = _props.loadMoreRows;
+      var minimumBatchSize = _props.minimumBatchSize;
       var rowsCount = _props.rowsCount;
       var threshold = _props.threshold;
 
@@ -5591,8 +5594,10 @@ var InfiniteLoader = function (_Component) {
 
       var unloadedRanges = scanForUnloadedRanges({
         isRowLoaded: isRowLoaded,
+        minimumBatchSize: minimumBatchSize,
+        rowsCount: rowsCount,
         startIndex: Math.max(0, startIndex - threshold),
-        stopIndex: Math.min(rowsCount, stopIndex + threshold)
+        stopIndex: Math.min(rowsCount - 1, stopIndex + threshold)
       });
 
       unloadedRanges.forEach(function (unloadedRange) {
@@ -5657,6 +5662,12 @@ InfiniteLoader.propTypes = {
   loadMoreRows: _react.PropTypes.func.isRequired,
 
   /**
+   * Minimum number of rows to be loaded at a time.
+   * This property can be used to batch requests to reduce HTTP requests.
+   */
+  minimumBatchSize: _react.PropTypes.number.isRequired,
+
+  /**
    * Number of rows in list; can be arbitrary high number if actual number is unknown.
    */
   rowsCount: _react.PropTypes.number.isRequired,
@@ -5669,6 +5680,7 @@ InfiniteLoader.propTypes = {
   threshold: _react.PropTypes.number.isRequired
 };
 InfiniteLoader.defaultProps = {
+  minimumBatchSize: 10,
   rowsCount: 0,
   threshold: 15
 };
@@ -5687,10 +5699,13 @@ function isRangeVisible(_ref2) {
  */
 function scanForUnloadedRanges(_ref3) {
   var isRowLoaded = _ref3.isRowLoaded;
+  var minimumBatchSize = _ref3.minimumBatchSize;
+  var rowsCount = _ref3.rowsCount;
   var startIndex = _ref3.startIndex;
   var stopIndex = _ref3.stopIndex;
 
   var unloadedRanges = [];
+
   var rangeStartIndex = null;
   var rangeStopIndex = null;
 
@@ -5713,6 +5728,17 @@ function scanForUnloadedRanges(_ref3) {
   }
 
   if (rangeStopIndex !== null) {
+    // Attempt to satisfy :minimumBatchSize requirement but don't exceed :rowsCount
+    var potentialStopIndex = Math.min(Math.max(rangeStopIndex, rangeStartIndex + minimumBatchSize - 1), rowsCount - 1);
+
+    for (var _i = rangeStopIndex + 1; _i <= potentialStopIndex; _i++) {
+      if (!isRowLoaded(_i)) {
+        rangeStopIndex = _i;
+      } else {
+        break;
+      }
+    }
+
     unloadedRanges.push({
       startIndex: rangeStartIndex,
       stopIndex: rangeStopIndex
